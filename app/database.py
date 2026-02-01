@@ -1,23 +1,16 @@
 import os
 from datetime import datetime
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from typing import Optional
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker, AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String, Integer, BigInteger, DateTime
-from dotenv import load_dotenv
+from app.config import settings
 
-load_dotenv()
 
-DB_USER = os.getenv("POSTGRES_USER")
-DB_PASS = os.getenv("POSTGRES_PASSWORD")
-DB_NAME = os.getenv("POSTGRES_DB")
-DB_HOST = os.getenv("DB_HOST_LOCAL", "localhost")   
-DB_PORT = os.getenv("POSTGRES_PORT", "5432")
-
-DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DATABASE_URL = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
 
 engine = create_async_engine(DATABASE_URL, echo=False)
-AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
-
+async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 class Base(AsyncAttrs, DeclarativeBase):
@@ -40,6 +33,17 @@ class Car(Base):
     car_vin: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     datetime_found: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
+    def __repr__(self):
+        return f"<Car {self.title} - ${self.price_usd}>"
+
+
 async def init_db():
+    """Create all tables in the database."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+
+async def get_session() -> AsyncSession:
+    """Get a database session."""
+    async with async_session() as session:
+        yield session
