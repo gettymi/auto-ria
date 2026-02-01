@@ -11,9 +11,10 @@ class Settings(BaseSettings):
 
     # Scraper settings
     RUN_TIME: str = "12:00"
+    DUMP_TIME: str = "12:00"
     DUMP_INTERVAL_HOURS: int = 24
-    MAX_CONCURRENT_REQUESTS: int = 5
-    REQUEST_DELAY: float = 1.0
+    MAX_CONCURRENT_REQUESTS: int = 3
+    REQUEST_DELAY: float = 1.5
     MAX_PAGES: int = 10
 
     # AutoRia settings
