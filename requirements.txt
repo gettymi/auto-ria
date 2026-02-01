@@ -1,7 +1,9 @@
-aiohttp
-beautifulsoup4
-sqlalchemy
-asyncpg
-python-dotenv
-apscheduler
-pydantic
+aiohttp==3.9.1
+beautifulsoup4==4.12.2
+sqlalchemy[asyncio]==2.0.23
+asyncpg==0.29.0
+python-dotenv==1.0.0
+apscheduler==3.10.4
+pydantic==2.5.2
+pydantic-settings==2.1.0
+lxml==4.9.4
