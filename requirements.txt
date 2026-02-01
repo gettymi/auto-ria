@@ -1,0 +1,7 @@
+aiohttp
+beautifulsoup4
+sqlalchemy
+asyncpg
+python-dotenv
+apscheduler
+pydantic
